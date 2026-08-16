@@ -1,30 +1,62 @@
 const express = require("express");
-
 const app = express();
 
-const port = 8000;
+const port  = 8000;
+app.use( express.json() );
+const users = [
+    { id: 1, name: "Ali", email: "ali@gmail.com" },
+    { id: 2, name: "Ahmed", email: "ahmed@gmail.com" }
+];
 
-app.get("/" ,(req,res)=>{
-    res.send("Hello World");
+
+app.get("/users" , (req,res)=>{
+    res.json(users);
+})
+
+app.get("/users/:id" , (req,res)=>{
+    const id = Number(req.params.id);
+    const user = users.find(user => user.id == id);
+    if(!user){
+       return res.status(404).json("user not found");
+    }
+    res.json(user);
+})
+
+app.post("/users"  , (req, res)=>{
+      const user = {
+        id : users.length +1,
+        name : req.body.name,
+        email : req.body.email
+      };
+
+    console.log(user);
+      users.push(user);
+      res.status(201).send("user Registered successfully");
+
+
+})
+
+app.patch("/users/:id" , (req , res) =>{
+    const id = Number(req.params.id);
+    const user = users.find(user => user.id == id);
+    if(!user){
+       return res.status(404).json("user not found");
+    }
+    user.email= req.body.email;
+    user.name = req.body.name;
+    res.json(user);
 });
 
-app.get("/about" , (req , res)=>{
-  res.send("this is the about page");
+
+app.delete("/users/:id" , (req , res)=>{
+    const id = Number(req.params.id);
+    const idx = users.findIndex(user => user.id == id);
+    if(idx === -1){
+       return res.status(404).json("user not found");
+    } 
+users.splice(idx, 1);
+res.json("user deleted successfully");
+
 });
 
-app.get("/users" , (req , res) =>{
-  res.send("users to be shown here");
-});
-
-app.post("/user" , (req , res) =>{
-  res.send("user registered successfully");
-});
-
-app.delete("/users" , (req , res) =>{
-  res.send("user deleted successfully");
-});
-
-app.listen(port , ()=>{
-  console.log(`running on port ${port}`)
-});
-
+app.listen(port);
