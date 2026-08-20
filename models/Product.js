@@ -1,10 +1,26 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-    name: String,
-    price: Number,
-    category:String,
-    inStock: Boolean
+    name: {
+        type: String,
+        required: true
+    },
+
+    price: {
+        type: Number,
+        required: true,
+        min : 0
+    },
+
+    category: {
+        type: String,
+        required: true
+    },
+
+    inStock: {
+        type: Boolean,
+        required: true
+    }
 });
 
 const Product = new mongoose.model("Product" , productSchema);

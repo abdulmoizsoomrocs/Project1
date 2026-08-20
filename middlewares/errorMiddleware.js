@@ -1,0 +1,18 @@
+const errorMiddleware = (err, req, res, next) => {
+
+     console.log("ERROR NAME:", err.name);
+    console.log("ERROR MESSAGE:", err.message);
+
+    if (err.name === "ValidationError") {
+        return res.status(400).json({
+            message: "Validation failed",
+            errors: err.errors
+        });
+    }
+
+    res.status(500).json({
+        message: "Internal Server Error"
+    });
+};
+
+module.exports = errorMiddleware;
